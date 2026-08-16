@@ -1,0 +1,11 @@
+chat "Starting traffic optimization"
+delay 1000
+setHotbar 3
+winClick 24 0
+delay 2000
+chat "Traffic light placed"
+afkOn
+loop 5 {
+    chat "Monitoring traffic flow..."
+    delay 5000
+}

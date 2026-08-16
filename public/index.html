@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NodeFlow - Traffic Simulation Game</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="navbar">
+      <h1>🚦 NodeFlow</h1>
+      <div class="stats">
+        <span>Vehicles: <span id="vehicleCount">0</span></span>
+        <span>Score: <span id="score">0</span></span>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="panel">
+          <h3>Game Controls</h3>
+          <button id="spawnVehicle">+ Spawn Vehicle</button>
+          <button id="placeTrafficLight">🚥 Traffic Light</button>
+          <button id="pauseGame">Pause</button>
+          <button id="saveGame">💾 Save</button>
+        </div>
+
+        <div class="panel">
+          <h3>Script Console</h3>
+          <textarea id="scriptEditor" placeholder="Enter script here..."></textarea>
+          <button id="runScript">▶ Run Script</button>
+          <button id="stopScript">⏹ Stop</button>
+        </div>
+
+        <div class="panel">
+          <h3>Accounts</h3>
+          <input type="file" id="accountFile" accept=".txt">
+          <div id="accountsList"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Proxies</h3>
+          <input type="file" id="proxyFile" accept=".txt">
+          <div id="proxiesList"></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <canvas id="gameCanvas" width="1000" height="600"></canvas>
+        <div id="eventLog" class="event-log">
+          <h4>Event Log</h4>
+          <div id="logContent"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
