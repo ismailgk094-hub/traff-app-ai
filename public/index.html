@@ -1,64 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NodeFlow - Traffic Simulation Game</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NodeFlow - Traffic Simulation & Management Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style id="theme-style">
+        /* Theme CSS injected here */
+    </style>
 </head>
 <body>
-  <div id="app">
-    <header class="navbar">
-      <h1>🚦 NodeFlow</h1>
-      <div class="stats">
-        <span>Vehicles: <span id="vehicleCount">0</span></span>
-        <span>Score: <span id="score">0</span></span>
-      </div>
-    </header>
+    <div id="gameContainer">
+        <canvas id="canvas"></canvas>
+        <div id="sidebar">
+            <!-- Stats Panel -->
+            <div class="sidebar-section">
+                <h3>📊 Stats</h3>
+                <div id="statPanel">
+                    <div class="stat-row">
+                        <span class="stat-label">Score:</span>
+                        <span class="stat-value" id="scoreValue">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Level:</span>
+                        <span class="stat-value" id="levelValue">1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Vehicles:</span>
+                        <span class="stat-value" id="vehicleCountValue">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Accidents:</span>
+                        <span class="stat-value" id="accidentValue">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Efficiency:</span>
+                        <span class="stat-value" id="efficiencyValue">0%</span>
+                    </div>
+                </div>
+            </div>
 
-    <div class="container">
-      <aside class="sidebar">
-        <div class="panel">
-          <h3>Game Controls</h3>
-          <button id="spawnVehicle">+ Spawn Vehicle</button>
-          <button id="placeTrafficLight">🚥 Traffic Light</button>
-          <button id="pauseGame">Pause</button>
-          <button id="saveGame">💾 Save</button>
-        </div>
+            <!-- Controls -->
+            <div class="sidebar-section">
+                <h3>🎮 Controls</h3>
+                <button onclick="window.gameClient && gameClient.spawnVehicle('car')">Spawn Car</button>
+                <button onclick="window.gameClient && gameClient.spawnVehicle('truck')">Spawn Truck</button>
+                <button onclick="window.gameClient && gameClient.placeTrafficLight()">Traffic Light</button>
+                <button onclick="window.gameClient && gameClient.pauseGame()">Pause</button>
+                <button onclick="window.gameClient && gameClient.resetGame()">Reset</button>
+            </div>
 
-        <div class="panel">
-          <h3>Script Console</h3>
-          <textarea id="scriptEditor" placeholder="Enter script here..."></textarea>
-          <button id="runScript">▶ Run Script</button>
-          <button id="stopScript">⏹ Stop</button>
-        </div>
+            <!-- Chat Log -->
+            <div class="sidebar-section">
+                <h3>💬 Chat</h3>
+                <div id="chatLog"></div>
+                <input type="text" id="chatInput" placeholder="Enter message..." style="width: 100%; padding: 5px; margin-top: 5px;">
+            </div>
 
-        <div class="panel">
-          <h3>Accounts</h3>
-          <input type="file" id="accountFile" accept=".txt">
-          <div id="accountsList"></div>
-        </div>
+            <!-- Vehicles -->
+            <div class="sidebar-section">
+                <h3>🚗 Vehicles</h3>
+                <div id="vehicleList" class="vehicle-list"></div>
+            </div>
 
-        <div class="panel">
-          <h3>Proxies</h3>
-          <input type="file" id="proxyFile" accept=".txt">
-          <div id="proxiesList"></div>
+            <!-- Server Info -->
+            <div class="sidebar-section">
+                <h3>ℹ️ Server</h3>
+                <div id="serverInfo">
+                    <div class="stat-row">
+                        <span class="stat-label">Status:</span>
+                        <span class="stat-value" id="serverStatus">Connecting...</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Players:</span>
+                        <span class="stat-value" id="playerCount">0</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </aside>
-
-      <main class="main-content">
-        <canvas id="gameCanvas" width="1000" height="600"></canvas>
-        <div id="eventLog" class="event-log">
-          <h4>Event Log</h4>
-          <div id="logContent"></div>
-        </div>
-      </main>
     </div>
-  </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/renderer.js"></script>
-  <script src="js/ui.js"></script>
+    <div id="statusBar">
+        <span class="status-item" id="statusLeft">Ready</span>
+        <span class="status-item" id="statusRight">FPS: 60</span>
+    </div>
+
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/gameClient.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (window.gameClient) {
+                gameClient.init();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,372 @@
+
+
+# 🚦 Project Prompt: "NodeFlow" - Traffic Simulation & Management Game
+
+## 📋 Project Overview
+
+Build a real-time traffic simulation and management game inspired by "Trafficer" (traffic management games) but incorporating the automation and botting features from **TrafficerMC**—a Minecraft botting tool with Anti-AFK, chat spammer, inventory management, and scripting capabilities . The game runs entirely on Node.js and allows players to manage traffic flow while using automation tools to control AI vehicles and simulate complex traffic scenarios.
+
+---
+
+## 🎯 Core Requirements (TrafficerMC Features Integrated)
+
+### Technical Stack
+- **Backend**: Node.js with Express.js
+- **Real-time Communication**: Socket.io
+- **Frontend**: HTML5 Canvas with custom CSS theming support
+- **Scripting Engine**: Custom DSL for automation
+- **Data Storage**: JSON files with auto-save functionality
+- **Proxy Support**: HTTP/SOCKS proxy integration
+- **Authentication**: Microsoft/offline account support
+
+---
+
+## 🔧 TrafficerMC-Inspired Features
+
+### 1. Anti-AFK & Idle Management
+- **Purpose**: Keep vehicles moving to prevent simulation stagnation
+- **Implementation**:
+  - Random movement patterns for idle vehicles
+  - Auto-rotate camera/view for monitoring
+  - Periodic small movements to simulate activity
+  - Configurable interval settings
+
+### 2. Scripting System (Core Feature)
+**Scripting allows automated traffic management without user input** 
+
+#### Script Commands to Support:
+```
+chat <message>              // Send chat messages to game log
+useHeld                     // Use current selected tool
+setHotbar <slot>            // Switch tool slots (0-8)
+winClick <slot> <type>      // Click UI elements (0=left, 1=right)
+closeWindow                 // Close modal/dialog
+drop <slot>                 // Remove vehicles/items
+startMove <direction>       // Move selected vehicle
+stopMove <direction>        // Stop vehicle movement
+afkOn / afkOff             // Toggle anti-AFK mode
+disconnect                  // Remove vehicle from simulation
+reconnect                   // Re-add vehicle
+delay <ms>                  // Wait before next command (default 1000ms)
+loop <times> { ... }       // Repeat commands
+```
+
+#### Script Variables:
+- `{player}` - Current username/vehicle ID
+- `{random}` - Random string generator
+
+#### Example Script:
+```
+chat "Starting traffic flow optimization"
+delay 1000
+setHotbar 3                 // Select traffic light tool
+winClick 24 0               // Place traffic light
+delay 2000
+chat "Traffic light placed at {player}"
+afkOn
+```
+
+### 3. Batch Multi-Vehicle Management
+- Control multiple AI vehicles simultaneously 
+- Set maximum concurrent vehicle limit
+- Batch start/stop all vehicles
+- Delay interval between vehicle spawns
+
+### 4. Account & Authentication System
+- **Account Files**: `.txt` file with usernames line by line 
+- **Microsoft Account Support**: Authentication token loading
+- **Offline Mode**: Local/single-player support
+- **Name Generator**: Random username generation with `(SALT)` and `(LEGIT)` options 
+
+### 5. Proxy Support
+- **Purpose**: Bypass connection limits and avoid detection 
+- **Protocols**: HTTP, SOCKS, and Auth proxies
+- **Proxy File**: `.txt` format with IP:PORT
+- **Per-Bot Proxy Assignment**: Individual proxies per vehicle
+
+### 6. Killaura (Combat/Action Automation)
+- **Purpose**: Automate interactions in the simulation
+- **Implementation**:
+  - Auto-target nearest "problematic" vehicle
+  - Ignore "friends" (whitelisted vehicles)
+  - Configurable attack range and speed
+
+### 7. Custom Theme Support
+- **Custom CSS**: Load external `.css` files for UI customization 
+- **UI Customization**: Colors, layouts, fonts
+- **Theme Switching**: Light/dark modes
+
+### 8. Auto-Save & Auto-Reconnect
+- **Auto-Save**: Automatic progress saving at intervals 
+- **Auto-Reconnect**: Vehicles reconnect after simulation pauses
+- **Bot Uptime Tracking**: Monitor vehicle/player activity duration
+
+### 9. Webhook Event Notifications
+- **Push Notifications**: QQ, Discord, DingTalk, etc. 
+- **Events**: Vehicle online/offline, reconnection, task completion, errors
+
+### 10. Spam Control with Bypass
+- Chat/notification spam prevention
+- Anti-spam bypass mechanisms 
+- Configurable delay between messages
+
+---
+
+## 🚗 Game-Specific Features (Traffic Management)
+
+### Traffic Simulation
+- **Vehicle Types**: Cars, Trucks, Buses, Emergency vehicles
+- **Traffic Rules**: Traffic lights, speed limits, lane discipline
+- **AI Behavior**: Realistic acceleration, braking, lane changing
+- **Road Network**: Grid-based city layout with intersections
+- **Traffic Flow Optimization**: Dynamic traffic light timing, congestion prediction
+
+### Player Controls
+- Place/remove traffic lights
+- Adjust speed limits
+- Open/close lanes
+- Dispatch emergency vehicles
+- Create/modify road layouts
+- Set up one-way streets
+
+### Scoring System
+- **Positive**: Efficient traffic flow, accident prevention, emergency response time
+- **Negative**: Accidents, long wait times, traffic violations, pollution
+
+### Game Modes
+- **Career Mode**: 50+ levels with increasing difficulty
+- **Sandbox Mode**: Unlimited resources, free building
+- **Challenge Mode**: Specific scenarios (accident cleanup, rush hour, event management)
+- **Multiplayer Mode**: Compete with other players
+
+---
+
+## 🏗️ Technical Architecture
+
+### Backend Structure
+```javascript
+src/
+├── simulation/
+│   ├── vehicle.js
+│   ├── road.js
+│   ├── intersection.js
+│   └── trafficLight.js
+├── scripting/
+│   ├── scriptEngine.js      // Custom DSL parser
+│   ├── scriptCommands.js    // Command implementations
+│   └── scriptValidator.js
+├── automation/
+│   ├── antiAFK.js
+│   ├── killaura.js
+│   ├── spamController.js
+│   └── autoReconnect.js
+├── accounts/
+│   ├── accountManager.js
+│   ├── authManager.js
+│   └── nameGenerator.js
+├── proxies/
+│   ├── proxyManager.js
+│   └── proxyChecker.js
+├── game/
+│   ├── gameState.js
+│   ├── scoring.js
+│   └── levelManager.js
+├── networking/
+│   ├── socketHandlers.js
+│   └── webhookManager.js
+├── ui/
+│   ├── themeManager.js
+│   └── cssLoader.js
+└── utils/
+    ├── logger.js
+    ├── config.js
+    └── autoSave.js
+```
+
+### Scripting Engine Architecture
+```javascript
+class ScriptEngine {
+    constructor() {
+        this.commands = {};
+        this.variables = {};
+        this.loops = [];
+    }
+    
+    parseScript(scriptText) {
+        // Parse custom DSL into AST
+    }
+    
+    executeCommand(command, args) {
+        // Execute individual script commands
+    }
+    
+    runScript(scriptFile) {
+        // Load and execute script file
+    }
+}
+
+class ScriptCommand {
+    static chat(message) { /* Send to game log */ }
+    static useHeld() { /* Use selected tool */ }
+    static setHotbar(slot) { /* Switch tool */ }
+    static winClick(slot, type) { /* Click UI */ }
+    static closeWindow() { /* Close modal */ }
+    static drop(slot) { /* Remove item/vehicle */ }
+    static startMove(direction) { /* Move vehicle */ }
+    static stopMove(direction) { /* Stop movement */ }
+    static afkOn() { /* Enable anti-AFK */ }
+    static afkOff() { /* Disable anti-AFK */ }
+    static disconnect() { /* Remove vehicle */ }
+    static reconnect() { /* Re-add vehicle */ }
+    static delay(ms) { /* Wait */ }
+}
+```
+
+### API Endpoints
+```javascript
+// Script Management
+POST   /api/script/upload       // Upload script file
+GET    /api/script/list         // List available scripts
+POST   /api/script/run          // Execute script
+POST   /api/script/stop         // Stop script execution
+
+// Account Management
+POST   /api/accounts/load       // Load account file
+GET    /api/accounts/list       // List accounts
+POST   /api/accounts/auth       // Authenticate accounts
+
+// Proxy Management
+POST   /api/proxies/load        // Load proxy file
+GET    /api/proxies/list        // List proxies
+POST   /api/proxies/check       // Check proxy status
+
+// Game Management
+GET    /api/game/state          // Current game state
+POST   /api/game/action         // Player actions
+POST   /api/save                // Save progress
+GET    /api/leaderboard         // High scores
+POST   /api/multiplayer/join    // Join multiplayer
+POST   /api/webhook/configure   // Configure webhooks
+
+// Theme Management
+POST   /api/theme/load          // Load custom CSS
+GET    /api/theme/current       // Get current theme
+```
+
+### WebSocket Events
+```javascript
+// Core Simulation Events
+- 'vehicle:update'              // Vehicle position updates
+- 'traffic:event'               // Traffic events (accidents, etc.)
+- 'player:action'               // Player actions
+- 'game:sync'                   // Full game state sync
+
+// Automation Events
+- 'script:start'                // Script execution started
+- 'script:stop'                 // Script execution stopped
+- 'script:log'                  // Script console output
+- 'afk:toggle'                  // Anti-AFK status change
+- 'killaura:target'             // Killaura target acquired
+
+// Account/Proxy Events
+- 'account:connected'           // Account connected
+- 'account:disconnected'        // Account disconnected
+- 'proxy:changed'               // Proxy switched
+- 'webhook:trigger'             // Webhook notification sent
+```
+
+---
+
+## 📁 File Formats
+
+### Script File Format
+```javascript
+// script.txt
+chat "Starting traffic optimization"
+delay 1000
+setHotbar 3
+winClick 24 0
+delay 2000
+chat "Traffic light placed"
+afkOn
+loop 5 {
+    chat "Monitoring traffic flow..."
+    delay 5000
+}
+```
+
+### Account File Format
+```txt
+// accounts.txt
+Player1
+Player2
+Player3_MS
+```
+
+### Proxy File Format
+```txt
+// proxies.txt
+192.168.1.1:8080
+192.168.1.2:8080
+192.168.1.3:8080
+```
+
+---
+
+## 🎮 UI/UX Requirements
+
+- **Dashboard**: Real-time stats, script console, event log
+- **Map View**: Zoomable 2D city view
+- **Script Editor**: Syntax highlighting, auto-completion
+- **Tool Palette**: All management tools
+- **Theme Manager**: CSS file loader and preview
+- **Account Manager**: Account list, status indicators
+- **Proxy Manager**: Proxy list, status checker
+- **Responsive Design**: Desktop-first with mobile support
+
+---
+
+## 📊 Performance Requirements
+
+- Support 200+ simultaneous vehicles
+- < 50ms server response time
+- 60 FPS client rendering
+- Handle 100+ concurrent players
+- Efficient script execution engine
+- Optimized for long-running simulations
+
+---
+
+## 🧪 Testing Requirements
+
+- Unit tests for script engine
+- Integration tests for API endpoints
+- Load testing for multiplayer
+- Proxy management testing
+- Anti-AFK behavior validation
+- Script execution performance tests
+
+---
+
+## 📚 Documentation Requirements
+
+- Scripting API documentation
+- Setup/installation guide
+- Gameplay tutorial
+- Theme customization guide
+- Developer guide
+- Deployment guide
+
+---
+
+## 🚀 Success Criteria
+
+- ✅ All TrafficerMC features implemented
+- ✅ Scripting engine fully functional
+- ✅ Multiple game modes working
+- ✅ < 50ms response time
+- ✅ 100+ concurrent players supported
+- ✅ Custom theme support working
+- ✅ Webhook notifications functional
+- ✅ Complete documentation
+
